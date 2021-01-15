@@ -10,13 +10,32 @@ const workOutSchema = new Schema({
   },
   exercises: [
     {
-      type: String,
-      name: String,
-      duration: Number,
-      weight: Number,
-      reps: Number,
-      sets: Number,
-      distance: Number
+      type: {
+        type: String,
+        trim: true,
+        required: "Exercise Type should be entered"
+      },
+      name: {
+        type: String,
+        trim: true,
+        required: "This is a required field"
+      },
+      duration: {
+        type: Number,
+        required: "This is a required field"
+      },
+      weight: {
+        type: Number
+      },
+      reps: {
+        type: Number
+      },
+      sets: {
+        type: Number
+      },
+      distance: {
+        type: Number
+      }
     }
   ]
 });
