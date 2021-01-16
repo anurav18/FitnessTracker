@@ -18,6 +18,7 @@ app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
 
+
 //re-direct to exercise.html page
 
 app.get("/exercise",(req,res)=>{
@@ -41,7 +42,7 @@ app.post("/api/workouts", (req, res) => {
     });
 });
 
-//adding a new exercise
+// //adding a new exercise
 
 app.put("/api/workouts/:id", ({ body, params }, res) => {
   const id = params.id;
@@ -54,7 +55,7 @@ app.put("/api/workouts/:id", ({ body, params }, res) => {
     });
 });
 
-//get last workout information
+// //get last workout information
 
 app.get("/api/workouts", (req, res) => {
   db.workOut.aggregate([
@@ -72,11 +73,17 @@ app.get("/api/workouts", (req, res) => {
     });
 });
 
-//List of workouts between a range
+// //List of workouts between a range
 
-app.get("/api/workouts/range", ({ query }, res) => {
-  db.workOut.find({})
-    .then(dbWorkouts => {
+app.get("/api/workouts/range", (req, res) => {
+  db.workOut.aggregate([
+    {$addFields: {
+            totalDuration: {
+                $sum: ["$exercises.duration"]
+            }
+        }
+    }
+]).sort({day: -1}).limit(7).sort({day:1}).then(dbWorkouts => {
       res.json(dbWorkouts);
     })
     .catch(err => {
